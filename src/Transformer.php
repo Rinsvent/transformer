@@ -9,11 +9,14 @@ use Rinsvent\Transformer\Transformer\TransformerInterface;
 
 class Transformer
 {
-    public function transform(mixed $value, Meta $meta): mixed
+    public function transform(mixed $value, Meta $meta, array $tags = ['default']): mixed
     {
+        $filteredTags = array_diff($tags, $meta->tags);
+        if (count($filteredTags) === count($tags)) {
+            return $value;
+        }
         $transformer = $this->grabTransformer($meta);
-        $transformer->transform($value, $meta);
-        return $value;
+        return $transformer->transform($value, $meta);
     }
 
     private function grabTransformer(Meta $meta): TransformerInterface
